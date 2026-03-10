@@ -80,6 +80,17 @@ module OpenRosa
 
     def generate_bindings(xml)
       generate_field_bindings(xml, @fields, "/#{@form_id}")
+      generate_instance_id_binding(xml)
+    end
+
+    def generate_instance_id_binding(xml)
+      xml.bind(
+        nodeset: "/#{@form_id}/meta/instanceID",
+        type: "string",
+        readonly: "true()",
+        "jr:preload" => "uid",
+        "jr:preloadParams" => "concat('uuid:', uuid())"
+      )
     end
 
     def generate_field_bindings(xml, fields, path_prefix)

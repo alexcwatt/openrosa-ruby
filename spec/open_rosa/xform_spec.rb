@@ -63,6 +63,14 @@ RSpec.describe OpenRosa::XForm do
       expect(xml).to include("<meta>")
       expect(xml).to include("<instanceID/>")
     end
+
+    it "generates instanceID binding with jr:preload uid" do
+      xml = generator.to_xml
+      expect(xml).to include('nodeset="/simple_test/meta/instanceID"')
+      expect(xml).to include('jr:preload="uid"')
+      expect(xml).to include("jr:preloadParams=\"concat('uuid:', uuid())\"")
+      expect(xml).to include('readonly="true()"')
+    end
   end
 
   describe "select1 field generation" do

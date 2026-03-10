@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-03-09
+
+### Added
+
+- XForm generation now includes an `instanceID` binding with `jr:preload="uid"` so ODK Collect automatically generates a UUID for each submission
+- Middleware falls back to `request.base_url` when no explicit `base_url` is configured, so form download URLs match the request host
+
 ## [0.1.0] - 2025-12-26
 
 Initial release.

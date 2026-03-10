@@ -208,6 +208,19 @@ RSpec.describe OpenRosa::Middleware do
       expect(xml).to include("<downloadUrl>https://api.example.org/api/v2/forms/no_url_form</downloadUrl>")
     end
 
+    it "falls back to request base_url when no base_url configured" do
+      middleware = OpenRosa::Middleware.new do |config|
+        config.forms = [form_without_url]
+      end
+
+      env = Rack::MockRequest.env_for("http://myhost.example.com/openrosa/formList")
+      status, _, body = middleware.call(env)
+
+      expect(status).to eq(200)
+      xml = body.join
+      expect(xml).to include("<downloadUrl>http://myhost.example.com/openrosa/forms/no_url_form</downloadUrl>")
+    end
+
     it "prefers explicit download_url over auto-generated" do
       middleware = OpenRosa::Middleware.new do |config|
         config.forms = [sample_form_class]
