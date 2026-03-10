@@ -113,4 +113,73 @@ RSpec.describe OpenRosa::Fields::Input do
       end
     end
   end
+
+  describe "constraint validation" do
+    it "allows simple regex constraints" do
+      expect do
+        OpenRosa::Fields::Input.new(:email, constraint: "regex(., '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+[.][a-zA-Z]{2,}')")
+      end.not_to raise_error
+    end
+
+    it "allows non-regex constraints" do
+      expect do
+        OpenRosa::Fields::Input.new(:age, type: :int, constraint: ". >= 18 and . <= 120")
+      end.not_to raise_error
+    end
+
+    it "allows Java-style regex features since JavaRosa uses java.util.regex" do
+      expect do
+        OpenRosa::Fields::Input.new(:email, constraint: "regex(., '(?:[a-z]+)@[a-z]+[.][a-z]+')")
+      end.not_to raise_error
+    end
+
+    it "rejects invalid regex patterns" do
+      expect do
+        OpenRosa::Fields::Input.new(:field, constraint: "regex(., '[unclosed')")
+      end.to raise_error(ArgumentError, /not a valid regular expression/)
+    end
+
+    it "rejects unbalanced parentheses in regex" do
+      expect do
+        OpenRosa::Fields::Input.new(:field, constraint: "regex(., '(unclosed')")
+      end.to raise_error(ArgumentError, /not a valid regular expression/)
+    end
+
+    it "rejects regex patterns containing unescaped single quotes" do
+      # A single quote inside a single-quoted XPath string breaks the XPath parser
+      expect do
+        OpenRosa::Fields::Input.new(:field, constraint: "regex(., 'it's broken')")
+      end.to raise_error(ArgumentError, /unquoted pattern/)
+    end
+
+    it "allows constraints without regex" do
+      expect do
+        OpenRosa::Fields::Input.new(:age, type: :int, constraint: ". > 0")
+      end.not_to raise_error
+    end
+
+    it "allows multiple regex calls in one constraint" do
+      expect do
+        OpenRosa::Fields::Input.new(:field, constraint: "regex(., '[a-z]+') and regex(., '.*@.*')")
+      end.not_to raise_error
+    end
+
+    it "validates double-quoted regex patterns" do
+      expect do
+        OpenRosa::Fields::Input.new(:email, constraint: 'regex(., "[a-z]+@[a-z]+[.][a-z]+")')
+      end.not_to raise_error
+    end
+
+    it "rejects invalid double-quoted regex patterns" do
+      expect do
+        OpenRosa::Fields::Input.new(:field, constraint: 'regex(., "[unclosed")')
+      end.to raise_error(ArgumentError, /not a valid regular expression/)
+    end
+
+    it "allows empty regex pattern" do
+      expect do
+        OpenRosa::Fields::Input.new(:field, constraint: "regex(., '')")
+      end.not_to raise_error
+    end
+  end
 end

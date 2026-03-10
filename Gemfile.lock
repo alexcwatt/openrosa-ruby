@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    open_rosa (0.2.0)
+    open_rosa (0.3.0)
       nokogiri (~> 1.15)
       rack (~> 3.0)
 
