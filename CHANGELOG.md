@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-03-09
+
+### Added
+
+- Validate `regex()` constraint expressions at form definition time — rejects patterns with unescaped quotes (which break XPath parsing on the device) and patterns that don't compile as valid regular expressions
+
 ## [0.2.0] - 2026-03-09
 
 ### Added
