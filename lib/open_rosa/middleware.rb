@@ -102,7 +102,7 @@ module OpenRosa
       {
         form_id: request.params["formID"],
         verbose: request.params["verbose"] == "true",
-        base_url: @config.base_url,
+        base_url: @config.base_url || request.base_url,
         mount_path: mount_path
       }
     end
